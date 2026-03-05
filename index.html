@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Table by B.B.</title>
+    <meta
+      name="description"
+      content="The Table by B.B. — intentional rooms for real conversation and meaningful connection."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-1"></div>
+    <div class="ambient ambient-2"></div>
+
+    <header class="site-header">
+      <div class="brand">
+        <span class="brand-kicker">BY B.B.</span>
+        <h1>THE TABLE</h1>
+        <p class="brand-subtitle">Intentional rooms for meaningful conversation.</p>
+      </div>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#story">Story</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#community">Community</a>
+        <a href="#join">Join</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="start">
+        <div class="hero-copy">
+          <p class="eyebrow">City to city. Table to table.</p>
+          <h2>Thoughtful people, curated spaces, deeper connection.</h2>
+          <p>
+            The Table brings founders, creatives, operators, and builders together for conversations
+            that matter. Every room is designed to feel warm, focused, and worth showing up for.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#join">Apply to join</a>
+            <a class="btn btn-ghost" href="#story">Learn more</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <img
+            src="https://thetablebybb.carrd.co/assets/images/image02.jpg?v=1da90e90"
+            alt="A small group gathered at a warmly lit table"
+          />
+        </div>
+      </section>
+
+      <section class="tabs-section" id="story">
+        <h3>Inside The Table</h3>
+        <p class="section-intro">Everything important, in one clean view.</p>
+
+        <div class="tabs" role="tablist" aria-label="About The Table">
+          <button class="tab active" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1">
+            Who we are
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2">
+            Who it's for
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3">
+            Why it exists
+          </button>
+        </div>
+
+        <article class="tab-panel active" id="panel-1" role="tabpanel" aria-labelledby="tab-1">
+          <p>
+            We’re a small team creating intentional rooms centered on honest dialogue, useful connection,
+            and shared momentum.
+          </p>
+        </article>
+        <article class="tab-panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2">
+          <p>
+            For people building something: founders, artists, students, professionals, and operators who
+            want more than surface-level networking.
+          </p>
+        </article>
+        <article class="tab-panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3">
+          <p>
+            Most cities have events. Few have rooms that feel intentional. The Table exists to make
+            quality community accessible wherever you are.
+          </p>
+        </article>
+      </section>
+
+      <section class="gallery" id="gallery" aria-label="The Table photo gallery">
+        <figure><img src="https://thetablebybb.carrd.co/assets/images/image01.jpg?v=1da90e90" alt="People in conversation around a table" /></figure>
+        <figure><img src="https://thetablebybb.carrd.co/assets/images/image03.jpg?v=1da90e90" alt="Guests mingling during a Table session" /></figure>
+        <figure><img src="https://thetablebybb.carrd.co/assets/images/image05.jpg?v=1da90e90" alt="A close candid moment at The Table" /></figure>
+      </section>
+
+      <section class="cards" id="community">
+        <article>
+          <h4>What to expect</h4>
+          <p>Small groups, guided conversation, and high-quality people who show up with intention.</p>
+        </article>
+        <article>
+          <h4>Growing city by city</h4>
+          <p>Different cities, same energy. We’re building a connected network of local tables.</p>
+        </article>
+        <article>
+          <h4>Host or sponsor</h4>
+          <p>Want to help build this in your city? We’re open to aligned hosts and brand partners.</p>
+        </article>
+      </section>
+
+      <section class="join" id="join">
+        <div>
+          <h3>Join us at the table</h3>
+          <p>Apply for a seat, nominate someone, or connect with us to help bring a Table to your city.</p>
+        </div>
+        <div class="join-actions">
+          <a class="btn btn-primary" href="https://tally.so/r/PdAAE1" target="_blank" rel="noreferrer">
+            Application
+          </a>
+          <a class="btn btn-ghost" href="https://www.instagram.com/thetablebyb.b/" target="_blank" rel="noreferrer">
+            Instagram
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>© <span id="year"></span> The Table by B.B.</p>
+      <div class="footer-links">
+        <a href="mailto:user@domain.ext">Email</a>
+        <a href="https://www.instagram.com/thetablebyb.b/" target="_blank" rel="noreferrer">Instagram</a>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
