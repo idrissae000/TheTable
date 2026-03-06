@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Table by B.B.</title>
+    <meta name="description" content="The Table by B.B. — intentional rooms for real conversation and meaningful connection." />
+    <style>
+      :root {
+        --bg: #0d0906;
+        --panel: rgba(36, 25, 16, 0.9);
+        --panel-soft: rgba(32, 22, 14, 0.74);
+        --text: #dfbf8b;
+        --muted: #c49d67;
+        --accent: #b98543;
+        --accent-strong: #e0b26f;
+        --danger: #ff7f7f;
+        --ok: #95d89f;
+        --border: rgba(199, 150, 90, 0.35);
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at 10% 10%, #2a1b10, #120c08 36%, #090603 100%);
+        line-height: 1.55;
+      }
+      body.modal-open { overflow: hidden; }
+
+      .ambient {
+        position: fixed; border-radius: 999px; filter: blur(95px); opacity: 0.35; pointer-events: none; z-index: -1;
+        animation: ambientFloat 12s ease-in-out infinite alternate;
+      }
+      .ambient-1 { width: 280px; height: 280px; background: #a0692c; top: -80px; right: -50px; }
+      .ambient-2 { width: 320px; height: 320px; background: #5e391f; bottom: -120px; left: -90px; animation-delay: -3s; }
+
+      .site-header, main, footer { width: min(1060px, 92vw); margin: 0 auto; }
+      .site-header {
+        display: flex; flex-direction: column; align-items: center; gap: .8rem;
+        padding: 1.4rem 0 1rem; text-align: center;
+      }
+      .brand-kicker { font-size: .72rem; letter-spacing: .28em; color: var(--muted); }
+      .brand-subtitle { margin: .45rem 0 0; color: var(--muted); }
+      h1, h2, h3, h4 { font-family: Georgia, 'Times New Roman', serif; margin: 0; }
+      h1 { letter-spacing: .12em; font-size: clamp(1.8rem, 3.4vw, 2.7rem); }
+
+      .site-nav { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+      .site-nav a {
+        color: var(--muted); text-decoration: none; font-size: .95rem;
+        transition: color .2s ease, transform .2s ease;
+      }
+      .site-nav a:hover { color: var(--accent-strong); transform: translateY(-1px); }
+
+      .hero { margin-top: .8rem; display: grid; grid-template-columns: 1.05fr 1fr; gap: 1rem; }
+      .panel {
+        border: 1px solid var(--border);
+        background: linear-gradient(160deg, var(--panel), rgba(20, 13, 9, .88));
+        border-radius: 16px;
+      }
+      .hero-copy { padding: 1.5rem; text-align: center; }
+      .hero-copy p { margin-bottom: 0; }
+      .eyebrow { margin: 0; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-size: .78rem; }
+      h2 { margin-top: .55rem; font-size: clamp(1.6rem, 4vw, 2.8rem); }
+      .hero-media img {
+        width: 100%; height: 100%; min-height: 350px; object-fit: cover;
+        border-radius: 16px; border: 1px solid var(--border);
+      }
+
+      .hero-actions, .join-actions { margin-top: 1rem; display: flex; justify-content: center; gap: .7rem; flex-wrap: wrap; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 999px; border: 1px solid transparent; cursor: pointer;
+        text-decoration: none; padding: .66rem 1.05rem; font-weight: 600;
+        transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+      }
+      .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.25); filter: brightness(1.05); }
+      .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-strong)); color: #1f1208; }
+      .btn-ghost { border-color: var(--border); color: var(--muted); background: rgba(24, 16, 10, .58); }
+
+      .tabs-section { margin-top: 1rem; padding: 1.2rem; text-align: center; }
+      .section-intro { margin: .4rem 0 1rem; color: var(--muted); }
+      .tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: .55rem; }
+      .tab {
+        background: rgba(255,255,255,.03); color: var(--muted); border: 1px solid var(--border);
+        border-radius: 999px; padding: .5rem .95rem; cursor: pointer;
+        transition: transform .18s ease, box-shadow .2s ease;
+      }
+      .tab:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+      .tab.active { color: #24160a; background: linear-gradient(130deg, #d6a86d, #b8793b); border-color: transparent; }
+      .tab-panels { position: relative; min-height: 90px; }
+      .tab-panel {
+        position: absolute; inset: 0; margin-top: 1rem;
+        opacity: 0; transform: translateY(8px) scale(.995); pointer-events: none;
+        transition: opacity .3s ease, transform .3s ease;
+      }
+      .tab-panel.active { position: relative; opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+      .gallery { margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+      .gallery figure { margin: 0; overflow: hidden; border-radius: 14px; }
+      .gallery img {
+        width: 100%; height: 250px; object-fit: cover; border-radius: 14px; border: 1px solid var(--border);
+        transition: transform .5s ease;
+      }
+      .gallery img:hover { transform: scale(1.03); }
+
+      .cards { margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+      .cards article { padding: 1rem; text-align: center; }
+
+      .join { margin: 1rem 0 1.3rem; padding: 1.2rem; display: flex; gap: 1rem; align-items: center; text-align: center; }
+      .join > div { flex: 1; }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 1rem 0 1.2rem;
+        display: flex; justify-content: space-between; color: var(--muted); font-size: .9rem;
+      }
+      .footer-links { display: flex; gap: 1rem; }
+      .footer-links a {
+        color: #f0bf63;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color .2s ease, text-shadow .2s ease;
+      }
+      .footer-links a:hover {
+        color: #ffd78f;
+        text-shadow: 0 0 14px rgba(255, 204, 120, .28);
+      }
+
+      [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+      [data-reveal].revealed { opacity: 1; transform: translateY(0); }
+
+      .modal-overlay {
+        position: fixed; inset: 0; background: rgba(0, 0, 0, .62);
+        display: grid; place-items: center; padding: 1rem; z-index: 200;
+        opacity: 0; visibility: hidden; pointer-events: none;
+        transition: opacity .28s ease, visibility .28s ease;
+      }
+      .modal-overlay.open {
+        opacity: 1; visibility: visible; pointer-events: auto;
+      }
+      .modal {
+        width: min(680px, 96vw);
+        max-height: min(90vh, 920px);
+        overflow: auto;
+        background: linear-gradient(175deg, rgba(34, 24, 16, .98), rgba(19, 13, 9, .98));
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: 0 20px 55px rgba(0,0,0,.45);
+        padding: 1rem 1rem 1.2rem;
+        transform: translateY(12px) scale(.97);
+        opacity: 0;
+        transition: transform .3s ease, opacity .3s ease;
+      }
+      .modal-overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
+      .modal-head { display: flex; justify-content: space-between; align-items: start; gap: .6rem; margin-bottom: .8rem; }
+      .modal h3 { margin: 0; font-size: 1.4rem; }
+      .close-btn {
+        border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--muted);
+        border-radius: 999px; width: 2rem; height: 2rem; cursor: pointer; font-size: 1.1rem;
+      }
+
+      form { display: grid; gap: .75rem; }
+      .field { display: grid; gap: .35rem; }
+      label { font-weight: 600; color: var(--accent-strong); font-size: .95rem; }
+      input, select, textarea {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: rgba(15, 10, 7, .75);
+        color: var(--text);
+        padding: .7rem .75rem;
+        font: inherit;
+      }
+      textarea { min-height: 100px; resize: vertical; }
+      input:focus, select:focus, textarea:focus, .close-btn:focus, .btn:focus, .tab:focus {
+        outline: 2px solid var(--accent-strong);
+        outline-offset: 2px;
+      }
+      .error { min-height: 1.05rem; color: var(--danger); font-size: .82rem; }
+      .hidden { display: none; }
+      .status { min-height: 1.2rem; font-weight: 600; }
+      .status.ok { color: var(--ok); }
+      .status.fail { color: var(--danger); }
+
+      @media (max-width: 900px) {
+        .hero, .cards { grid-template-columns: 1fr; }
+        .join, footer { flex-direction: column; align-items: center; text-align: center; }
+        .tab-panels { min-height: 120px; }
+
+        .gallery {
+          display: flex;
+          gap: .75rem;
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+          scroll-snap-type: x mandatory;
+          padding: .2rem .2rem .35rem;
+          margin-inline: -.2rem;
+        }
+        .gallery::-webkit-scrollbar { height: 7px; }
+        .gallery::-webkit-scrollbar-thumb {
+          background: rgba(185, 133, 67, .7);
+          border-radius: 999px;
+        }
+        .gallery figure {
+          flex: 0 0 84%;
+          scroll-snap-align: center;
+          border-radius: 16px;
+          border: 1px solid var(--border);
+          background: var(--panel-soft);
+          box-shadow: 0 10px 24px rgba(0, 0, 0, .24);
+        }
+        .gallery img {
+          height: 240px;
+          border-radius: 16px;
+          display: block;
+        }
+      }
+
+      @keyframes ambientFloat { from { transform: translateY(0) scale(1); } to { transform: translateY(12px) scale(1.03); } }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation: none !important; transition-duration: 1ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ambient ambient-1"></div>
+    <div class="ambient ambient-2"></div>
+
+    <header class="site-header" data-reveal>
+      <div class="brand">
+        <span class="brand-kicker">BY B.B.</span>
+        <h1>THE TABLE</h1>
+        <p class="brand-subtitle">Intentional rooms for meaningful conversation.</p>
+      </div>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#story">Story</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#community">Community</a>
+        <a href="#join">Join</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="start" data-reveal>
+        <div class="hero-copy panel">
+          <p class="eyebrow">City to city. Table to table.</p>
+          <h2>Thoughtful people, curated spaces, deeper connection.</h2>
+          <p>
+            The Table brings founders, creatives, operators, and builders together for conversations that matter.
+            Every room is designed to feel warm, focused, and worth showing up for.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="applicationBtn" type="button">Application</button>
+            <a class="btn btn-ghost" href="#story">Learn more</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <img src="https://thetablebybb.carrd.co/assets/images/image02.jpg?v=1da90e90" alt="A small group gathered at a warmly lit table" />
+        </div>
+      </section>
+
+      <section class="tabs-section panel" id="story" data-reveal>
+        <h3>Inside The Table</h3>
+        <p class="section-intro">Everything important, in one clean view.</p>
+        <div class="tabs" role="tablist" aria-label="About The Table">
+          <button class="tab active" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1">Who we are</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2">Who it's for</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3">Why it exists</button>
+        </div>
+        <div class="tab-panels">
+          <article class="tab-panel active" id="panel-1" role="tabpanel" aria-labelledby="tab-1" aria-hidden="false">
+            <p>We’re a small team creating intentional rooms centered on honest dialogue, useful connection, and shared momentum.</p>
+          </article>
+          <article class="tab-panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" aria-hidden="true">
+            <p>For people building something: founders, artists, students, professionals, and operators who want more than surface-level networking.</p>
+          </article>
+          <article class="tab-panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3" aria-hidden="true">
+            <p>Most cities have events. Few have rooms that feel intentional. The Table exists to make quality community accessible wherever you are.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="gallery" id="gallery" aria-label="The Table photo gallery" data-reveal>
+        <figure><img src="https://thetablebybb.carrd.co/assets/images/image01.jpg?v=1da90e90" alt="People in conversation around a table" /></figure>
+        <figure><img src="https://thetablebybb.carrd.co/assets/images/image03.jpg?v=1da90e90" alt="Guests mingling during a Table session" /></figure>
+        <figure><img src="https://thetablebybb.carrd.co/assets/images/image05.jpg?v=1da90e90" alt="A close candid moment at The Table" /></figure>
+      </section>
+
+      <section class="cards" id="community" data-reveal>
+        <article class="panel">
+          <h4>What to expect</h4>
+          <p>Small groups, guided conversation, and high-quality people who show up with intention.</p>
+        </article>
+        <article class="panel">
+          <h4>Growing city by city</h4>
+          <p>Different cities, same energy. We’re building a connected network of local tables.</p>
+        </article>
+        <article class="panel">
+          <h4>Host or sponsor</h4>
+          <p>Want to help build this in your city? We’re open to aligned hosts and brand partners.</p>
+        </article>
+      </section>
+
+      <section class="join panel" id="join" data-reveal>
+        <div>
+          <h3>Join us at the table</h3>
+          <p>Apply for a seat, nominate someone, or connect with us to help bring a Table to your city.</p>
+        </div>
+        <div class="join-actions">
+          <button class="btn btn-primary" id="applicationBtn2" type="button">Application</button>
+          <a class="btn btn-ghost" href="https://www.instagram.com/thetablebyb.b/" target="_blank" rel="noreferrer">Instagram</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>© <span id="year"></span> The Table by B.B.</p>
+      <div class="footer-links">
+        <a href="mailto:user@domain.ext">Email</a>
+        <a href="https://www.instagram.com/thetablebyb.b/" target="_blank" rel="noreferrer">Instagram</a>
+      </div>
+    </footer>
+
+    <div class="modal-overlay" id="applicationModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="appModalTitle">
+        <div class="modal-head">
+          <div>
+            <h3 id="appModalTitle">Application</h3>
+            <p class="section-intro" style="margin-top:.2rem">Tell us a bit about you.</p>
+          </div>
+          <button type="button" class="close-btn" id="closeModalBtn" aria-label="Close application modal">×</button>
+        </div>
+
+        <form id="applicationForm" novalidate>
+          <div class="field">
+            <label for="fullName">Full Name *</label>
+            <input id="fullName" name="fullName" type="text" autocomplete="name" required />
+            <div class="error" data-error-for="fullName"></div>
+          </div>
+
+          <div class="field">
+            <label for="age">Age *</label>
+            <input id="age" name="age" type="number" min="13" max="99" required />
+            <div class="error" data-error-for="age"></div>
+          </div>
+
+          <div class="field">
+            <label for="instagram">Instagram Handle *</label>
+            <input id="instagram" name="instagram" type="text" placeholder="@yourhandle" required />
+            <div class="error" data-error-for="instagram"></div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email *</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+            <div class="error" data-error-for="email"></div>
+          </div>
+
+          <div class="field">
+            <label for="linkedin">LinkedIn URL (optional)</label>
+            <input id="linkedin" name="linkedin" type="url" placeholder="https://linkedin.com/in/yourname" />
+            <div class="error" data-error-for="linkedin"></div>
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone Number (optional)</label>
+            <input id="phone" name="phone" type="text" inputmode="numeric" placeholder="(555)-555-5555" />
+            <div class="error" data-error-for="phone"></div>
+          </div>
+
+          <div class="field">
+            <label for="city">City *</label>
+            <select id="city" name="city" required>
+              <option value="">Select a city</option>
+              <option>Austin, TX</option>
+              <option>Dallas, TX</option>
+              <option>Chicago, IL</option>
+              <option>Houston, TX</option>
+              <option>San Francisco, CA</option>
+              <option>Los Angeles, CA</option>
+              <option>New York City, NY</option>
+              <option>Washington D.C.</option>
+              <option>Detroit, MI</option>
+              <option>Other</option>
+            </select>
+            <div class="error" data-error-for="city"></div>
+          </div>
+
+          <div class="field hidden" id="otherCityWrap">
+            <label for="otherCity">Your City *</label>
+            <input id="otherCity" name="otherCity" type="text" />
+            <div class="error" data-error-for="otherCity"></div>
+          </div>
+
+          <div class="field">
+            <label for="notes">Notes (optional)</label>
+            <textarea id="notes" name="notes" placeholder="Anything else you'd like us to know?"></textarea>
+            <div class="error" data-error-for="notes"></div>
+          </div>
+
+          <div class="status" id="formStatus" aria-live="polite"></div>
+          <button class="btn btn-primary" type="submit" id="submitBtn">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const tabs = Array.from(document.querySelectorAll('.tab'));
+      const panels = Array.from(document.querySelectorAll('.tab-panel'));
+      function setActiveTab(tab) {
+        const targetId = tab.getAttribute('aria-controls');
+        const targetPanel = document.getElementById(targetId);
+        if (!targetPanel) return;
+        tabs.forEach((t) => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        panels.forEach((p) => { p.classList.remove('active'); p.setAttribute('aria-hidden', 'true'); });
+        tab.classList.add('active'); tab.setAttribute('aria-selected', 'true');
+        requestAnimationFrame(() => { targetPanel.classList.add('active'); targetPanel.setAttribute('aria-hidden', 'false'); });
+      }
+      tabs.forEach((tab) => tab.addEventListener('click', () => setActiveTab(tab)));
+
+      const revealElements = Array.from(document.querySelectorAll('[data-reveal]'));
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries, obs) => {
+          entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('revealed'); obs.unobserve(entry.target); } });
+        }, { threshold: 0.15 });
+        revealElements.forEach((el, i) => { el.style.setProperty('--reveal-delay', `${i * 70}ms`); observer.observe(el); });
+      } else revealElements.forEach((el) => el.classList.add('revealed'));
+
+      const modalOverlay = document.getElementById('applicationModal');
+      const modal = modalOverlay.querySelector('.modal');
+      const openButtons = [document.getElementById('applicationBtn'), document.getElementById('applicationBtn2')].filter(Boolean);
+      const closeBtn = document.getElementById('closeModalBtn');
+      const form = document.getElementById('applicationForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const formStatus = document.getElementById('formStatus');
+      const citySelect = document.getElementById('city');
+      const otherCityWrap = document.getElementById('otherCityWrap');
+      const otherCityInput = document.getElementById('otherCity');
+      const phoneInput = document.getElementById('phone');
+      let lastFocusedTrigger = null;
+
+      const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+      function openModal(trigger) {
+        lastFocusedTrigger = trigger || document.activeElement;
+        modalOverlay.classList.add('open');
+        modalOverlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+        const firstInput = form.querySelector('input, select, textarea, button');
+        if (firstInput) firstInput.focus();
+      }
+      function closeModal() {
+        modalOverlay.classList.remove('open');
+        modalOverlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
+        if (lastFocusedTrigger && typeof lastFocusedTrigger.focus === 'function') lastFocusedTrigger.focus();
+      }
+
+      openButtons.forEach((btn) => btn.addEventListener('click', () => openModal(btn)));
+      closeBtn.addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+
+      document.addEventListener('keydown', (e) => {
+        if (!modalOverlay.classList.contains('open')) return;
+        if (e.key === 'Escape') { closeModal(); return; }
+        if (e.key === 'Tab') {
+          const focusables = Array.from(modal.querySelectorAll(focusableSelector)).filter((el) => !el.disabled && el.offsetParent !== null);
+          if (!focusables.length) return;
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      });
+
+      function setError(fieldName, msg = '') {
+        const err = form.querySelector(`[data-error-for="${fieldName}"]`);
+        if (err) err.textContent = msg;
+      }
+      function clearErrors() {
+        form.querySelectorAll('.error').forEach((e) => (e.textContent = ''));
+        formStatus.textContent = '';
+        formStatus.className = 'status';
+      }
+      function normalizedInstagram(v) {
+        const clean = (v || '').trim().replace(/^@+/, '');
+        return clean ? `@${clean}` : '';
+      }
+      function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v || '').trim()); }
+      function validateLinkedin(v) {
+        if (!v.trim()) return true;
+        return /^https?:\/\//i.test(v.trim());
+      }
+      function formatPhone(value) {
+        const digits = value.replace(/\D/g, '').slice(0, 10);
+        if (digits.length <= 3) return digits;
+        if (digits.length <= 6) return `(${digits.slice(0,3)})-${digits.slice(3)}`;
+        return `(${digits.slice(0,3)})-${digits.slice(3,6)}-${digits.slice(6)}`;
+      }
+      phoneInput.addEventListener('input', () => {
+        const start = phoneInput.selectionStart;
+        const beforeLen = phoneInput.value.length;
+        phoneInput.value = formatPhone(phoneInput.value);
+        const afterLen = phoneInput.value.length;
+        const nextPos = Math.max(0, (start || 0) + (afterLen - beforeLen));
+        phoneInput.setSelectionRange(nextPos, nextPos);
+      });
+
+      function toggleOtherCity() {
+        const isOther = citySelect.value === 'Other';
+        otherCityWrap.classList.toggle('hidden', !isOther);
+        otherCityInput.required = isOther;
+        if (!isOther) {
+          otherCityInput.value = '';
+          setError('otherCity', '');
+        }
+      }
+      citySelect.addEventListener('change', toggleOtherCity);
+
+      function validateForm() {
+        clearErrors();
+        let ok = true;
+
+        const fullName = form.fullName.value.trim();
+        const age = Number(form.age.value);
+        const instagram = normalizedInstagram(form.instagram.value);
+        const email = form.email.value.trim();
+        const linkedin = form.linkedin.value.trim();
+        const city = form.city.value;
+        const otherCity = otherCityInput.value.trim();
+
+        if (!fullName) { setError('fullName', 'Full Name is required.'); ok = false; }
+        if (!form.age.value || Number.isNaN(age) || age < 13 || age > 99) { setError('age', 'Age must be between 13 and 99.'); ok = false; }
+        if (!instagram || !/^@[A-Za-z0-9._]{1,30}$/.test(instagram)) { setError('instagram', 'Enter a valid Instagram handle (letters, numbers, . or _).'); ok = false; }
+        if (!validateEmail(email)) { setError('email', 'Please enter a valid email (e.g. name@example.com).'); ok = false; }
+        if (!validateLinkedin(linkedin)) { setError('linkedin', 'LinkedIn URL must start with http:// or https://'); ok = false; }
+        if (!city) { setError('city', 'Please choose a city.'); ok = false; }
+        if (city === 'Other' && !otherCity) { setError('otherCity', 'Please enter your city.'); ok = false; }
+
+        form.instagram.value = instagram;
+        if (city === 'Other') {
+          const hiddenCity = form.querySelector('input[name="city_final"]') || document.createElement('input');
+          hiddenCity.type = 'hidden';
+          hiddenCity.name = 'city_final';
+          hiddenCity.value = otherCity;
+          form.appendChild(hiddenCity);
+        }
+        return ok;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Submitting…';
+        formStatus.textContent = '';
+        formStatus.className = 'status';
+
+        try {
+          const response = await fetch('https://formspree.io/f/maqpwkaq', {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' },
+          });
+
+          if (!response.ok) throw new Error('Request failed');
+          form.reset();
+          toggleOtherCity();
+          clearErrors();
+          formStatus.textContent = '✅ Application submitted!';
+          formStatus.classList.add('ok');
+        } catch (err) {
+          formStatus.textContent = '❌ Something went wrong. Please try again.';
+          formStatus.classList.add('fail');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      });
+
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
